@@ -18,14 +18,6 @@ class WbApiClient
         $this->limit = $limit ?? (int) config('wb.limit', 500);
     }
 
-    /**
-     * Fetch a single page for the given endpoint.
-     *
-     * @param string $endpoint e.g. 'sales', 'orders', 'stocks', 'incomes'
-     * @param array $params Should contain dateFrom/dateTo as per API
-     * @param int $page 1-based
-     * @return array{items: array<int,mixed>, page:int, limit:int}
-     */
     public function fetchPage(string $endpoint, array $params, int $page = 1): array
     {
         $query = array_filter([
@@ -44,7 +36,6 @@ class WbApiClient
 
         $data = $response->json();
 
-        // Try standard shapes; fall back to array itself
         $items = [];
         if (is_array($data)) {
             if (isset($data['data']) && is_array($data['data'])) {
@@ -52,7 +43,7 @@ class WbApiClient
             } elseif (isset($data['items']) && is_array($data['items'])) {
                 $items = $data['items'];
             } elseif (Arr::isList($data)) {
-                $items = $data; // plain list
+                $items = $data;
             }
         }
 
@@ -63,13 +54,6 @@ class WbApiClient
         ];
     }
 
-    /**
-     * Generator that yields items across all pages.
-     *
-     * @param string $endpoint
-     * @param array $params
-     * @return \Generator<mixed>
-     */
     public function iterate(string $endpoint, array $params): \Generator
     {
         $page = 1;
@@ -82,7 +66,7 @@ class WbApiClient
             foreach ($items as $item) {
                 yield $item;
             }
-            // Stop if less than limit -> last page
+
             if (count($items) < ($params['limit'] ?? $this->limit)) {
                 break;
             }
