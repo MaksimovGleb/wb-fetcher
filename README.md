@@ -1,6 +1,7 @@
-## Database access
-Host: sql.freedb.tech  
-Database: freedb_wb_fetcher  
-User: freedb_user123  
-Password: supersecret  
-Tables: products, orders, stocks
+### Database connection
+
+Host: 34.128.64.133  
+Port: 3306  
+Database: wb_fetcher  
+User: wb_user  
+Password: wb_pass_123
