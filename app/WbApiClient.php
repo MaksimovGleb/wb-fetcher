@@ -29,8 +29,10 @@ class WbApiClient
         ], fn ($v) => $v !== null && $v !== '');
 
         $response = Http::baseUrl($this->baseUrl)
-            ->timeout(60)
             ->acceptJson()
+            ->timeout(90)
+            ->connectTimeout(15)
+            ->retry(5, 2000)
             ->get("/api/{$endpoint}", $query)
             ->throw();
 
